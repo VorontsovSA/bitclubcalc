@@ -50,7 +50,7 @@ class App extends Component {
       share: 1
     };
     var i = 1;
-    while (i <= 100000 && poolShare.toFixed(2) > 0) {
+    while (i <= 2000 && poolShare.toFixed(2) > 0) {
       if (pools.length > 0 && pools[0].lastDay < i) {
         var pool = pools.shift();
         poolShare -= pool.share;
