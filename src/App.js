@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactBootstrap from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
 import logo from './logo.svg';
 import './App.css';
 import "./bootswatch/Flatly/bootstrap.min.css";
@@ -103,7 +102,7 @@ class App extends Component {
                     inputRef={ref => { this.earning = ref; }}
                     value={this.state.earning}
                     type="text"
-                    placeholder="Enter text"
+                    placeholder=""
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />
@@ -114,7 +113,7 @@ class App extends Component {
                     inputRef={ref => { this.rate = ref; }}
                     value={this.state.rate}
                     type="text"
-                    placeholder="Enter text"
+                    placeholder=""
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />
@@ -124,8 +123,8 @@ class App extends Component {
                   <FormControl
                     inputRef={ref => { this.rePurchase = ref; }}
                     value={this.state.rePurchase}
-                    type="text"
-                    placeholder="Enter text"
+                    type="number"
+                    placeholder=""
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />
@@ -136,16 +135,16 @@ class App extends Component {
                     inputRef={ref => { this.poolPrice = ref; }}
                     value={this.state.poolPrice}
                     type="text"
-                    placeholder="Enter text"
+                    placeholder=""
                     onChange={this.handleChange}
                   />
                   <FormControl.Feedback />
                 </FormGroup>
               </Form>
               <Well>
-                <p>{this.state.days.length-1}</p>
-                <p>{this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(2) : ''}</p>
-                <p>{this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) : ''}</p>
+                <p>365 / {this.state.days.length >= 365 ? (this.state.days[365-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
+                <p>1000 / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
+                <p>{this.state.days.length-1} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
               </Well>
             </Col>
           </Row>
