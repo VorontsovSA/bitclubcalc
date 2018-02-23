@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.css";
 
-import { Navbar, NavItem, Nav, Grid, Row, Col, Form, FormGroup, ControlLabel, FormControl, HelpBlock, Table, Well } from "react-bootstrap";
+import { Navbar, Grid, Row, Col, Form, FormGroup, ControlLabel, FormControl, Table, Well } from "react-bootstrap";
 
 class App extends Component {
   constructor() {
@@ -20,6 +20,7 @@ class App extends Component {
       poolLife: 0,
       maxEarning: 0,
       days: [],
+      mainPoints: []
     };
   }
 
@@ -44,12 +45,14 @@ class App extends Component {
     var pools = [];
     var realEarning = 0;
     var rePurchaseShare = 0;
+    var mainPoints = [];
     pools[0] = {
       lastDay: 1000,
       share: 1
     };
     var i = 1;
     var maxI = 2000;
+    var gotPoolPrice = false;
     while (i <= 7300 && poolShare.toFixed(2) > 0) {
       if (pools.length > 0 && pools[0].lastDay < i) {
         var pool = pools.shift();
@@ -62,6 +65,31 @@ class App extends Component {
           lastDay: i + 1000,
           share: 0.05
         };
+      }
+      if (i === 365) {
+        mainPoints.push({
+          i: i,
+          name: 'First year'
+        });
+      }
+      if (i === 1000) {
+        mainPoints.push({
+          i: i,
+          name: '1000 days'
+        });
+      }
+      if (i === 2000) {
+        mainPoints.push({
+          i: i,
+          name: '2000 days'
+        });
+      }
+      if (!gotPoolPrice && poolPrice <= currentEarning*rate) {
+        gotPoolPrice = true;
+        mainPoints.push({
+          i: i,
+          name: i + ' days'
+        });
       }
       realEarning = poolShare*earning;
       rePurchaseShare = realEarning*rePurchase/100;
@@ -79,6 +107,7 @@ class App extends Component {
       i++;
     };
     this.setState({ poolLife: i - 1 });
+    this.setState({ mainPoints: mainPoints });
     this.setState({ maxEarning: currentEarning });
     this.setState({ days: days });
   }
@@ -150,12 +179,16 @@ class App extends Component {
             </Col>
             <Col md={6} sm={6}>
               <Well>
-                365 days / {this.state.days.length >= 365 ? (this.state.days[365].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365].earning*this.rate.value).toFixed(2) + ' $' : ''}
-                <br />
-                1000 days ({(1000/365).toFixed(2)} year) / {this.state.days.length >= 1000 ? (this.state.days[1000].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000].earning*this.rate.value).toFixed(2) + ' $' : ''}
-                <br />
-                {this.state.days.length-1} days ({((this.state.days.length-1)/365).toFixed(2)} year) / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
-                <br />
+                {this.state.mainPoints.map((point, i) => {
+                  return (
+                    <span key={i}>
+                      {point.name} ({(point.i/365).toFixed(2)} year) 
+                      / {this.state.days.length >= point.i ? (this.state.days[point.i].earning).toFixed(6) + ' BTC ' : ''}
+                      / {this.state.days.length >= point.i ? (this.state.days[point.i].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                      <br />
+                    </span>
+                  );
+                })}
                 {this.state.poolLife} days ({(this.state.poolLife/365).toFixed(2)} year) / {(this.state.maxEarning).toFixed(6) + ' BTC'} / {(this.state.maxEarning*this.state.rate).toFixed(2) + ' $'}
               </Well>
             </Col>
