@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import ReactBootstrap from 'react-bootstrap';
 import logo from './logo.svg';
 import './App.css';
-import "./bootswatch/Flatly/bootstrap.min.css";
-// import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.css";
 
 import { Navbar, NavItem, Nav, Grid, Row, Col, Form, FormGroup, ControlLabel, FormControl, HelpBlock, Table, Well } from "react-bootstrap";
 
@@ -19,6 +17,8 @@ class App extends Component {
       rate: 11000,
       rePurchase: 40,
       poolPrice: 1000,
+      poolLife: 0,
+      maxEarning: 0,
       days: [],
     };
   }
@@ -49,7 +49,8 @@ class App extends Component {
       share: 1
     };
     var i = 1;
-    while (i <= 2000 && poolShare.toFixed(2) > 0) {
+    var maxI = 2000;
+    while (i <= 7300 && poolShare.toFixed(2) > 0) {
       if (pools.length > 0 && pools[0].lastDay < i) {
         var pool = pools.shift();
         poolShare -= pool.share;
@@ -66,14 +67,19 @@ class App extends Component {
       rePurchaseShare = realEarning*rePurchase/100;
       rePurchaseAccumulator += rePurchaseShare;
       currentEarning += realEarning - rePurchaseShare;
-      days[i] = {
-        number: i,
-        earning: currentEarning,
-        rePurchaseAccumulator: rePurchaseAccumulator,
-        poolShare: poolShare
-      };
+
+      if (i <= maxI) {
+        days[i] = {
+          number: i,
+          earning: currentEarning,
+          rePurchaseAccumulator: rePurchaseAccumulator,
+          poolShare: poolShare
+        };
+      }
       i++;
     };
+    this.setState({ poolLife: i });
+    this.setState({ maxEarning: currentEarning });
     this.setState({ days: days });
   }
 
@@ -141,10 +147,16 @@ class App extends Component {
                   <FormControl.Feedback />
                 </FormGroup>
               </Form>
+            </Col>
+            <Col md={6} sm={6}>
               <Well>
-                <p>365 / {this.state.days.length >= 365 ? (this.state.days[365-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
-                <p>1000 / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
-                <p>{this.state.days.length-1} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) + ' $' : ''}</p>
+                365 days / {this.state.days.length >= 365 ? (this.state.days[365-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                <br />
+                1000 days ({(1000/365).toFixed(2)} year) / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                <br />
+                {this.state.days.length-1} days ({((this.state.days.length-1)/365).toFixed(2)} year) / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                <br />
+                {this.state.poolLife} days ({(this.state.poolLife/365).toFixed(2)} year) / {(this.state.maxEarning).toFixed(6) + ' BTC'} / {(this.state.maxEarning*this.state.rate).toFixed(2) + ' $'}
               </Well>
             </Col>
           </Row>
@@ -154,9 +166,9 @@ class App extends Component {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Earning BTC</th>
                     <th>Pool share</th>
                     <th>rePurchase acc</th>
+                    <th>Earning BTC</th>
                     <th>Earning $</th>
                   </tr>
                 </thead>
@@ -165,9 +177,9 @@ class App extends Component {
                     return (
                       <tr key={i}>
                         <td>{day.number} ({(day.number/365).toFixed(2)})</td>
-                        <td>{(day.earning).toFixed(9)}</td>
                         <td>{(day.poolShare).toFixed(2)}</td>
                         <td>{(day.rePurchaseAccumulator*this.rate.value).toFixed(2)}</td>
+                        <td>{(day.earning).toFixed(9)}</td>
                         <td>{(day.earning*this.rate.value).toFixed(2)}</td>
                       </tr>
                     );
