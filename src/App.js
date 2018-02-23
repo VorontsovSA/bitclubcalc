@@ -13,10 +13,10 @@ class App extends Component {
 
     this.state = {
       activePlace: 0,
-      earning: 0.00017107,
-      rate: 11000,
+      earning: 0.00009,
+      rate: 10000,
       rePurchase: 40,
-      poolPrice: 1000,
+      poolPrice: 500,
       poolLife: 0,
       maxEarning: 0,
       days: [],
@@ -78,7 +78,7 @@ class App extends Component {
       }
       i++;
     };
-    this.setState({ poolLife: i });
+    this.setState({ poolLife: i - 1 });
     this.setState({ maxEarning: currentEarning });
     this.setState({ days: days });
   }
@@ -150,9 +150,9 @@ class App extends Component {
             </Col>
             <Col md={6} sm={6}>
               <Well>
-                365 days / {this.state.days.length >= 365 ? (this.state.days[365-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                365 days / {this.state.days.length >= 365 ? (this.state.days[365].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 365 ? (this.state.days[365].earning*this.rate.value).toFixed(2) + ' $' : ''}
                 <br />
-                1000 days ({(1000/365).toFixed(2)} year) / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
+                1000 days ({(1000/365).toFixed(2)} year) / {this.state.days.length >= 1000 ? (this.state.days[1000].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length >= 1000 ? (this.state.days[1000].earning*this.rate.value).toFixed(2) + ' $' : ''}
                 <br />
                 {this.state.days.length-1} days ({((this.state.days.length-1)/365).toFixed(2)} year) / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning).toFixed(6) + ' BTC' : ''} / {this.state.days.length > 0 ? (this.state.days[this.state.days.length-1].earning*this.rate.value).toFixed(2) + ' $' : ''}
                 <br />
